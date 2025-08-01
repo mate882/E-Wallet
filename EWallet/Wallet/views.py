@@ -128,6 +128,11 @@ def withdraw_money(request):
         if wallet.balance < amount:
             messages.error(request, "Insufficient balance")
             return redirect('withdraw')
+        
+
+        if amount <= 0:
+            messages.error(request, "Withdraw amount must be greater than 0.")
+            return redirect('withdraw')
 
 
         wallet.balance -= amount
