@@ -16,12 +16,12 @@ from decimal import Decimal, InvalidOperation
 def create_wallet(request):
     if hasattr(request.user, 'wallet'):
         messages.info(request, "You already have a wallet.")
-        return redirect("Users:home")  
+        return redirect("home")  
 
     if request.method == "POST":
         Wallet.objects.create(user=request.user)
         messages.success(request, "Your wallet has been created!")
-        return redirect("Users:home")
+        return redirect("home")
 
     return render(request, "wallet/create_wallet.html")
 
