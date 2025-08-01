@@ -1,0 +1,66 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Login - Welcome Back{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+<body class="bg-primary">
+
+    {% block content %}      
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active fw-bold" href="{% url 'home' %}">
+                            <i class="bi bi-house-door"></i> Home
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container-fluid vh-100 d-flex align-items-center justify-content-center">
+        <div class="row w-100 justify-content-center">
+            <div class="col-lg-4 col-md-6 col-sm-8">
+                <div class="card border-0 shadow-lg rounded-4">
+                    <div class="card-header bg-gradient bg-success text-white text-center py-4 rounded-top">
+                        <h2 class="mb-1 fw-light">Welcome Back</h2>
+                        <p class="mb-0 opacity-75">Sign in to your account</p>
+                    </div>
+                    <div class="card-body p-5">
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-success btn-lg rounded-pill py-2">
+                                    Sign In
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer bg-light text-center py-3 border-0">
+                        <div class="d-flex flex-column gap-2">
+                            <a href="{% url 'register' %}" class="btn btn-outline-primary btn-sm rounded-pill">
+                                Create New Account
+                            </a>
+                            <a href="{% url 'password_reset' %}" class="btn btn-link btn-sm text-muted">
+                                Forgot Password?
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    {% endblock %}
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>
