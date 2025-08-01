@@ -13,6 +13,9 @@ from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.tokens import default_token_generator
 
+from django.db.models import Q
+from Wallet.models import Transaction
+
 User = get_user_model()
 
 
@@ -110,19 +113,42 @@ def activate(request, uidb64, token):
 def profile(request):
     if not request.user.is_authenticated:
         return redirect('register')
+    
+    user = request.user
+    wallet = getattr(user, 'wallet', None)
+
+    context = {
+        "user": user,
+        "wallet": wallet
+    }
 
     if request.method == 'POST':
-        user = request.user
+
+
         profile_pic = request.FILES.get('profile_pic')
         if profile_pic:
             user.profile_pic = profile_pic
             user.save()
 
-    return render(request, 'main/profile.html', {'user': request.user})
-
+    return render(request, 'main/profile.html', context)
 
 def home(request):
-    return render(request, 'main/home.html')
+    if not request.user.is_authenticated:
+        return render(request, 'main/home.html') 
+
+    wallet = getattr(request.user, 'wallet', None)
+    if not wallet:
+        return redirect('create_wallet')
+
+    transactions = Transaction.objects.filter(
+        Q(sender=request.user) | Q(receiver=request.user)
+    ).order_by('-timestamp')[:5]
+
+    context = {
+        "wallet": wallet,
+        "transactions": transactions
+    }
+    return render(request, 'main/home.html', context)
 
 @login_required
 def delete_profile_pic(request):
